@@ -1,0 +1,19 @@
+<!--
+  Add these keys inside the top-level <dict> of ios/App/App/Info.plist.
+
+  iOS shows the first string in the Bluetooth permission prompt. Without it the
+  app is killed by the system the moment CoreBluetooth is used, and App Review
+  rejects the build.
+--><key>NSBluetoothAlwaysUsageDescription</key>
+<string>TorqueMedic requires continuous Bluetooth access to communicate with your OBD2 adapter and pull live vehicle diagnostics.</string>
+<key>NSBluetoothPeripheralUsageDescription</key>
+<string>TorqueMedic requires Bluetooth access to scan for and connect to nearby OBD2 adapter hardware.</string>
+<key>NSBluetoothAlwaysUsageDescription</key>
+<string>TorqueMedic requires continuous Bluetooth access to communicate with your OBD2 adapter and pull live vehicle diagnostics.</string>
+<key>NSBluetoothPeripheralUsageDescription</key>
+<string>TorqueMedic requires Bluetooth access to scan for and connect to nearby OBD2 adapter hardware.</string>
+
+<key>NSBluetoothAlwaysUsageDescription</key>
+<string>TorqueMedic uses Bluetooth to talk to your OBD-II adapter so it can read fault codes, live sensor data and readiness monitors.</string>
+<key>NSBluetoothPeripheralUsageDescription</key>
+<string>TorqueMedic connects to your OBD-II adapter over Bluetooth.</string>

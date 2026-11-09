@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="theme-color" content="#0b0f14" media="(prefers-color-scheme: dark)" />
+    <meta name="theme-color" content="#0b0f14" />
+    <meta name="color-scheme" content="dark" />
+    <meta
+      name="description"
+      content="TorqueMedic — read and clear OBD-II trouble codes over Bluetooth, watch live sensor data, and follow guided repair steps."
+    />
+    <meta name="format-detection" content="telephone=no" />
+    <title>TorqueMedic — OBD2 Scanner &amp; Repair</title>
+
+    <link rel="icon" href="/icon.svg" type="image/svg+xml" />
+    <link rel="icon" href="/icons/icon-192.png" type="image/png" sizes="192x192" />
+    <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
+    <link rel="manifest" href="/manifest.webmanifest" />
+
+    <!-- iOS standalone app behaviour -->
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="TorqueMedic" />
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
+// Add this import statement at the top of your dashboard.js file
+import { DTCDictionary } from './dtcDictionary.js';
+
+// Update your existing render function to use the code library mapping
+function renderTroubleCodes(codesArray) {
+  dtcContainer.innerHTML = ''; // Clear processing placeholders
+
+  if (codesArray.length === 0) {
+    dtcContainer.innerHTML = '<div class="no-faults">🎉 System Clear! No Engine Error Codes detected.</div>';
+    return;
+  }
+
+  codesArray.forEach(code => {
+    // Query our lookup module to find what this code stands for
+    const clearDefinition = DTCDictionary.getDefinition(code);
+
+    const item = document.createElement('div');
+    item.className = 'dtc-item';
+    
+    // Updated HTML template layout handling both raw token string and descriptive text block
+    item.innerHTML = `
+      <div style="display: flex; flex-direction: column; gap: 4px; text-align: left;">
+        <span class="dtc-code" style="color: var(--accent-red);">${code}</span>
+        <span style="color: var(--text-main); font-size: 0.9rem; font-weight: 500;">${clearDefinition}</span>
+      </div>
+    `;
+    dtcContainer.appendChild(item);
+  });
+}import { Obd2Service } from './obd2Service.js';
+import { Obd2Parser } from './obd2Parser.js';
+
+// DOM Element Registry
+const connectBtn = document.getElementById('connectBtn');
+const scanDtcBtn = document.getElementById('scanDtcBtn');
+const statusDot = document.getElementById('statusDot');
+const statusText = document.getElementById('statusText');
+const rpmValue = document.getElementById('rpmValue');
+const speedValue = document.getElementById('speedValue');
+const dtcContainer = document.getElementById('dtcContainer');
+
+let liveDataInterval = null;
+
+// Handle Initial Adapter Search/Connection Routine
+connectBtn.addEventListener('click', () => {
+  statusText.innerText = "Scanning...";
+  connectBtn.disabled = true;
+
+  Obd2Service.scanForAdapter(async (device) => {
+    statusText.innerText = `Connecting to ${device.name || 'Adapter'}...`;
+    
+    // Attempt link using device payload identifiers via core BLE plugins
+    await Obd2Service.connectToAdapter(device.id, handleLiveStreamBytes);
+    
+    // UI Updates following execution
+    statusDot.classList.add('connected');
+    statusText.innerText = "Connected";
+    connectBtn.innerText = "Disconnect";
+    connectBtn.disabled = false;
+    scanDtcBtn.disabled = false;
+    
+    // Begin continuous background updates (request telemetry data every 500ms)
+    startLivePolling();
+  });
+});
+
+// Periodic Request Loop (Alters commands sequentially to avoid bandwidth collision)
+function startLivePolling() {
+  let toggle = true;
+  liveDataInterval = setInterval(() => {
+    if (toggle) {
+      Obd2Service.requestEngineRPM();
+    } else {
+      Obd2Service.requestVehicleSpeed();
+    }
+    toggle = !toggle;
+  }, 500);
+}
+
+// Global Parser router binding raw streams back onto specific elements
+function handleLiveStreamBytes(rawString) {
+  if (rawString.includes("41 0C") || rawString.includes("410C")) {
+    const rpm = Obd2Parser.parseRPM(rawString);
+    if (rpm !== null) rpmValue.innerText = rpm;
+  } 
+  
+  else if (rawString.includes("41 0D") || rawString.includes("410D")) {
+    const speed = Obd2Parser.parseSpeed(rawString, false);
+    if (speed !== null) speedValue.innerText = speed;
+  } 
+  
+  else if (rawString.includes("43")) {
+    const codes = Obd2Parser.parseTroubleCodes(rawString);
+    renderTroubleCodes(codes);
+  }
+}
+
+// Request Stored Vehicle ECU Error Arrays 
+scanDtcBtn.addEventListener('click', () => {
+  dtcContainer.innerHTML = '<div class="no-faults" style="color: var(--text-muted)">Querying codes...</div>';
+  Obd2Service.requestTroubleCodes();
+});
+
+// UI Code Renderer for Active Engine Malfunctions
+function renderTroubleCodes(codesArray) {
+  dtcContainer.innerHTML = ''; // Clear fallback states
+
+  if (codesArray.length === 0) {
+    dtcContainer.innerHTML = '<div class="no-faults">🎉 System Clear! No Engine Error Codes detected.</div>';
+    return;
+  }
+
+  codesArray.forEach(code => {
+    const item = document.createElement('div');
+    item.className = 'dtc-item';
+    item.innerHTML = `
+      <span class="dtc-code">${code}</span>
+      <span style="color: var(--text-muted); font-size: 0.85rem;">Fault Code Detected</span>
+    `;
+    dtcContainer.appendChild(item);
+  });
+}
+

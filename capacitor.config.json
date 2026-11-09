@@ -1,0 +1,35 @@
+{
+  "appId": "com.torquemedic.app",
+  "appName": "TorqueMedic",
+  "webDir": "dist",
+  "webviewPath": "index.html",
+  "android": {
+    "allowMixedContent": false,
+    "backgroundColor": "#0b0f14"
+  },
+  "ios": {
+    "contentInset": "always",
+    "backgroundColor": "#0b0f14",
+    "limitsNavigationsToAppBoundDomains": false
+  },
+  "plugins": {
+    "SplashScreen": {
+      "backgroundColor": "#0b0f14",
+      "showSpinner": false,
+      "launchAutoHide": true
+    }{
+  "appId": "com.yourcompany.torquemedic",
+  "appName": "TorqueMedic",
+  "webDir": "dist",
+  "plugins": {
+    "SplashScreen": {
+      "launchShowDuration": 3000,
+      "launchAutoHide": true,
+      "backgroundColor": "#0f172a",
+      "androidScaleType": "CENTER_CROP"
+    }
+  }
+}
+
+  }
+}

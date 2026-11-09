@@ -1,0 +1,27 @@
+https://chatgpt.com/s/t_6af19bb67e8481919c734202e2038aa3
+I can help, but there are two different things you might mean:
+
+* ChatGPT file-processing tool: Enable or restore the tool that can open, inspect, edit and package your uploaded TorqueMedic ZIP. I can’t create or enable ChatGPT’s internal tools myself.
+* TorqueMedic file-processing module: Build a file-processing utility into your application.
+
+I recommend option 1 first so we can repair your entire TorqueMedic project, then build and prepare the Android and iOS applications.
+
+Do you mean option 1?
+Absolutely. Let’s make TorqueMedic a reliable, smooth, fully functional mobile app, ready for real-world use on Android and iPhone.
+
+I’ll keep the main goals focused:
+
+* Bluetooth Classic and BLE OBD-II connectivity.
+* Automatic adapter detection and reconnection.
+* Live vehicle dashboard with RPM, speed, temperature and engine load.
+* Diagnostic trouble-code scanning and explanations.
+* Fault-code clearing with confirmation.
+* Saved vehicle profiles and diagnostic history.
+* Smooth navigation, responsive screens and offline-friendly operation.
+* Android APK/AAB and iOS IPA release preparation.
+
+Most important: I want to test actual vehicle communication, not just make the screens look functional. We also need to verify compatibility with your adapters and vehicles.
+
+The file-processing tool is currently unavailable, so I haven’t yet repaired or built the uploaded project. I won’t claim the app is running until we’ve successfully built and tested it on devices.
+
+We’ll work toward a complete TorqueMedic release, preserving your existing project and its features.

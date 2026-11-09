@@ -1,0 +1,62 @@
+export const DTCDictionary = {
+  // --- Fuel & Air Metering (P0100 - P0199) ---
+  "P0101": "Mass Air Flow (MAF) Circuit Range/Performance Problem",
+  "P0102": "Mass Air Flow (MAF) Circuit Low Input",
+  "P0113": "Intake Air Temperature Sensor 1 Circuit High",
+  "P0128": "Coolant Thermostat (Coolant Temp Below Thermostat Regulating Temperature)",
+  "P0133": "Oxygen Sensor Circuit Slow Response (Bank 1, Sensor 1)",
+  "P0135": "Oxygen Sensor Heater Circuit Malfunction (Bank 1, Sensor 1)",
+  "P0171": "System Too Lean (Bank 1) - Too much air or not enough fuel",
+  "P0172": "System Too Rich (Bank 1) - Too much fuel or not enough air",
+  "P0174": "System Too Lean (Bank 2)",
+  "P0175": "System Too Rich (Bank 2)",
+
+  // --- Injector & Ignition Misfires (P0200 - P0399) ---
+  "P0201": "Injector Circuit Malfunction - Cylinder 1",
+  "P0300": "Random/Multiple Cylinder Misfire Detected",
+  "P0301": "Cylinder 1 Misfire Detected",
+  "P0302": "Cylinder 2 Misfire Detected",
+  "P0303": "Cylinder 3 Misfire Detected",
+  "P0304": "Cylinder 4 Misfire Detected",
+  "P0325": "Knock Sensor 1 Circuit Malfunction (Bank 1 or Single Sensor)",
+  "P0340": "Camshaft Position Sensor 'A' Circuit Malfunction",
+
+  // --- Auxiliary Emission Controls (P0400 - P0499) ---
+  "P0401": "Exhaust Gas Recirculation (EGR) Flow Insufficient Detected",
+  "P0420": "Catalytic Converter System Efficiency Below Threshold (Bank 1)",
+  "P0430": "Catalytic Converter System Efficiency Below Threshold (Bank 2)",
+  "P0442": "Evaporative Emission Control System Leak Detected (Small Leak)",
+  "P0455": "Evaporative Emission Control System Leak Detected (Gross/Large Leak)",
+
+  // --- Vehicle Speed, Idling & Transmission (P0500 - P0799) ---
+  "P0505": "Idle Control System Malfunction",
+  "P0603": "Internal Control Module Keep Alive Memory (KAM) Error",
+  "P0700": "Transmission Control System Malfunction (MIL Request)",
+  
+  /**
+   * Fallback helper function to parse generic code patterns if the exact 
+   * code isn't explicitly defined above.
+   */
+  getDefinition(code) {
+    if (this[code]) return this[code];
+
+    // Subsystem classification mapping helper based on the 3rd character
+    const subSystem = code.charAt(2);
+    let category = "Unknown Vehicle Fault";
+
+    if (code.startsWith('P')) {
+      switch(subSystem) {
+        case '1': case '2': category = "Fuel and Air Metering Management"; break;
+        case '3': category = "Ignition System or Engine Misfire"; break;
+        case '4': category = "Auxiliary Emission Controls"; break;
+        case '5': category = "Vehicle Speed Controls & Idle System"; break;
+        case '6': category = "Computer Output Circuit / ECU Internal"; break;
+        case '7': case '8': case '9': category = "Transmission or Gearbox Control System"; break;
+      }
+    } else if (code.startsWith('C')) category = "Chassis System (Brakes/Suspension/Steering)";
+    else if (code.startsWith('B')) category = "Body System (Airbags/Air Conditioning/Wiring)";
+    else if (code.startsWith('U')) category = "Network Communication Fault (CAN-Bus / Modules)";
+
+    return `Generic ${category}. Please consult a mechanical database.`;
+  }
+};
