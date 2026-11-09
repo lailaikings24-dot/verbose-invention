@@ -1,0 +1,25 @@
+<!--
+  Merge these into android/app/src/main/AndroidManifest.xml, inside <manifest>.
+
+  BLUETOOTH_SCAN/CONNECT cover Android 12+. ACCESS_FINE_LOCATION is only needed
+  for discovery on Android 11 and older, hence maxSdkVersion. declare "neverForLocation"
+  so Play does not treat the app as a location tracker.
+--> xml
+<uses-permission android:name="android.permission.BLUETOOTH" android:maxSdkVersion="30" />
+<uses-permission android:name="android.permission.BLUETOOTH_ADMIN" android:maxSdkVersion="30" />
+
+<!-- Required for Android 12 and higher -->
+<uses-permission android:name="android.permission.BLUETOOTH_SCAN" android:usesPermissionFlags="neverForLocation" />
+<uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
+
+<!-- Bluetooth scanning requires fine location access on older Android devices -->
+<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+
+<uses-permission android:name="android.permission.BLUETOOTH_SCAN"
+    android:usesPermissionFlags="neverForLocation" />
+<uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
+<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"
+    android:maxSdkVersion="30" />
+
+<uses-feature android:name="android.hardware.bluetooth" android:required="false" />
+<uses-feature android:name="android.hardware.bluetooth_le" android:required="false" />
